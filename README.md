@@ -1,1 +1,1 @@
-# terraform-function-pubsub
+# terraform-functions
