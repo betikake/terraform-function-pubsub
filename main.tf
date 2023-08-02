@@ -44,6 +44,8 @@ resource "google_cloudfunctions_function" "default" {
   runtime     = var.run_time
   entry_point = var.entry_point
 
+  vpc_connector = var.vpc_connector
+
   source_archive_bucket = module.bucket.bucket_name
   source_archive_object = module.bucket.bucket_object
 
