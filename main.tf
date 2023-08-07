@@ -37,6 +37,24 @@ resource "google_service_account" "default" {
   project      = var.fun_project_id
 }
 
+//permission
+resource "google_project_iam_member" "permissions_am" {
+  project = var.fun_project_id
+  for_each = toset([
+    "roles/bigquery.dataEditor",
+    "roles/cloudfunctions.invoker",
+    "roles/run.invoker",
+    "roles/cloudsql.admin",
+    "roles/cloudsql.client",
+    "roles/cloudsql.editor",
+    "roles/logging.admin",
+    "roles/logging.logWriter",
+    "roles/pubsub.publisher",
+  ])
+  role = each.key
+  member  = "serviceAccount:${google_service_account.default.email}"
+}
+
 resource "google_cloudfunctions_function" "default" {
   name        = var.function_name
   description = var.description
