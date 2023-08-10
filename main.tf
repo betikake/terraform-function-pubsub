@@ -73,7 +73,7 @@ resource "google_cloudfunctions_function" "default" {
   environment_variables = var.environment_variables
 
   labels = {
-    last_deployed_at = random_id.bucket_prefix.hex
+    random_value = random_id.bucket_prefix.hex
   }
 
   event_trigger {
