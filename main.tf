@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-resource "google_pubsub_topic" "topic" {
+resource "google_pubsub_topic" "default" {
   name = var.pubsub_topic
 }
 
@@ -39,7 +39,7 @@ resource "google_service_account" "default" {
 
 //permission
 resource "google_project_iam_member" "permissions_am" {
-  project = var.fun_project_id
+  project  = var.fun_project_id
   for_each = toset([
     "roles/bigquery.dataEditor",
     "roles/cloudfunctions.invoker",
@@ -52,35 +52,46 @@ resource "google_project_iam_member" "permissions_am" {
     "roles/pubsub.publisher",
     "roles/bigquery.admin"
   ])
-  role = each.key
-  member  = "serviceAccount:${google_service_account.default.email}"
+  role   = each.key
+  member = "serviceAccount:${google_service_account.default.email}"
 }
 
-resource "google_cloudfunctions_function" "default" {
+resource "google_cloudfunctions2_function" "default" {
   name        = var.function_name
   description = var.description
   project     = var.fun_project_id
-  runtime     = var.run_time
-  entry_point = var.entry_point
+  location    = var.region
 
-  vpc_connector = var.vpc_connector
+  build_config {
+    runtime               = var.run_time
+    entry_point           = var.entry_point
 
-  available_memory_mb   = 128
-
-  source_archive_bucket = module.bucket.bucket_name
-  source_archive_object = module.bucket.bucket_object
-
-  environment_variables = var.environment_variables
-
-  event_trigger {
-    event_type = "google.pubsub.topic.publish"
-    resource   = google_pubsub_topic.topic.id
-    failure_policy {
-      retry = true
+    source {
+      storage_source {
+        bucket = module.bucket.bucket_name
+        object = module.bucket.bucket_object
+      }
     }
   }
 
-  service_account_email = google_service_account.default.email
+  service_config {
+    available_memory               = "128Mi"
+    vpc_connector                  = var.vpc_connector
+    service_account_email          = google_service_account.default.email
+    max_instance_count             = var.max_instance
+    min_instance_count             = var.min_instance
+    all_traffic_on_latest_revision = true
+    ingress_settings               = "ALLOW_INTERNAL_ONLY"
+    environment_variables = var.environment_variables
+  }
+
+  event_trigger {
+    trigger_region = var.region
+    event_type     = "google.cloud.pubsub.topic.v1.messagePublished"
+    pubsub_topic   = google_pubsub_topic.default.id
+    retry_policy   = "RETRY_POLICY_RETRY"
+  }
+
 }
 /*
 output "function_location" {
