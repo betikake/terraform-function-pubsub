@@ -65,10 +65,16 @@ resource "google_cloudfunctions_function" "default" {
 
   vpc_connector = var.vpc_connector
 
+  available_memory_mb   = 128
+
   source_archive_bucket = module.bucket.bucket_name
   source_archive_object = module.bucket.bucket_object
 
   environment_variables = var.environment_variables
+
+  labels = {
+    last_deployed_at = random_id.bucket_prefix.hex
+  }
 
   event_trigger {
     event_type = "google.pubsub.topic.publish"
