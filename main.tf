@@ -72,10 +72,6 @@ resource "google_cloudfunctions_function" "default" {
 
   environment_variables = var.environment_variables
 
-  labels = {
-    random_value = random_id.bucket_prefix.hex
-  }
-
   event_trigger {
     event_type = "google.pubsub.topic.publish"
     resource   = google_pubsub_topic.topic.id
