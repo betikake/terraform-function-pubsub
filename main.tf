@@ -50,6 +50,7 @@ resource "google_project_iam_member" "permissions_am" {
     "roles/logging.admin",
     "roles/logging.logWriter",
     "roles/pubsub.publisher",
+    "roles/bigquery.admin"
   ])
   role = each.key
   member  = "serviceAccount:${google_service_account.default.email}"
