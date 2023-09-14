@@ -32,8 +32,8 @@ module "bucket" {
 }
 
 resource "google_service_account" "default" {
-  account_id   = var.service_account.account_id
-  display_name = var.service_account.display_name
+  account_id   = lower(var.service_account.account_id)
+  display_name = lower(var.service_account.display_name)
   project      = var.fun_project_id
 }
 
@@ -57,14 +57,14 @@ resource "google_project_iam_member" "permissions_am" {
 }
 
 resource "google_cloudfunctions2_function" "default" {
-  name        = var.function_name
+  name        = lower(var.function_name)
   description = var.description
   project     = var.fun_project_id
   location    = var.region
 
   build_config {
-    runtime               = var.run_time
-    entry_point           = var.entry_point
+    runtime     = var.run_time
+    entry_point = var.entry_point
 
     source {
       storage_source {
@@ -82,7 +82,7 @@ resource "google_cloudfunctions2_function" "default" {
     min_instance_count             = var.min_instance
     all_traffic_on_latest_revision = true
     ingress_settings               = "ALLOW_INTERNAL_ONLY"
-    environment_variables = var.environment_variables
+    environment_variables          = var.environment_variables
   }
 
   event_trigger {
