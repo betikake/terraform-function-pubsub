@@ -85,7 +85,7 @@ resource "google_cloudfunctions2_function" "default" {
   }
 
   labels = {
-    version-crc32c  = lower(regex("([^a-zA-Z0-9]+)", module.bucket.crc32c, ""))
+    version-crc32c  = lower(replace(module.bucket.crc32c, "/\\W+/", ""))
   }
 
   event_trigger {
