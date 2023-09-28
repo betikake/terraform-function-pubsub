@@ -84,9 +84,15 @@ resource "google_cloudfunctions2_function" "default" {
     environment_variables          = var.environment_variables
   }
 
-  labels = {
-    version-crc32c  = lower(replace(module.bucket.crc32c, "/\\W+/", ""))
+  lifecycle {
+    replace_triggered_by  = [
+      module.bucket
+    ]
   }
+
+  /*labels = {
+    version-crc32c  = lower(replace(module.bucket.crc32c, "/\\W+/", ""))
+  }*/
 
   event_trigger {
     trigger_region = var.region
