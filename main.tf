@@ -21,13 +21,13 @@ module "archive" {
 }
 
 module "bucket" {
-  source               = "git::https://github.com/betikake/terraform-bucket"
-  bucket_name          = var.source_bucket_name
-  location             = var.fun_location
-  project_id           = var.fun_project_id
-  source_code          = module.archive.source
-  output_location      = module.archive.output_path
-  function_name        = var.function_name
+  source          = "git::https://github.com/betikake/terraform-bucket"
+  bucket_name     = var.source_bucket_name
+  location        = var.fun_location
+  project_id      = var.fun_project_id
+  source_code     = module.archive.source
+  output_location = module.archive.output_path
+  function_name   = var.function_name
 }
 
 resource "google_service_account" "default" {
@@ -84,15 +84,9 @@ resource "google_cloudfunctions2_function" "default" {
     environment_variables          = var.environment_variables
   }
 
-  lifecycle {
-    replace_triggered_by  = [
-      terraform_data.replacement
-    ]
+  labels = {
+    version-crc32c = lower(replace(module.bucket.crc32c, "/\\W+/", ""))
   }
-
-  /*labels = {
-    version-crc32c  = lower(replace(module.bucket.crc32c, "/\\W+/", ""))
-  }*/
 
   event_trigger {
     trigger_region = var.region
@@ -103,9 +97,6 @@ resource "google_cloudfunctions2_function" "default" {
 
 }
 
-resource "terraform_data" "replacement" {
-  input = lower(replace(module.bucket.crc32c, "/\\W+=/", ""))
-}
 /*
 output "function_location" {
   value       = var.trigger_type == "pubsub" ? var.pubsub_topic : google_cloudfunctions2_function.default.location
