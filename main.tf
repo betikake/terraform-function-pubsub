@@ -86,7 +86,7 @@ resource "google_cloudfunctions2_function" "default" {
 
   lifecycle {
     replace_triggered_by  = [
-      module.bucket
+      terraform_data.replacement
     ]
   }
 
@@ -101,6 +101,10 @@ resource "google_cloudfunctions2_function" "default" {
     retry_policy   = "RETRY_POLICY_RETRY"
   }
 
+}
+
+resource "terraform_data" "replacement" {
+  input = lower(replace(module.bucket.crc32c, "/\\W+=/", ""))
 }
 /*
 output "function_location" {
