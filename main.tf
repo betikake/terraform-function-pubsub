@@ -82,6 +82,7 @@ resource "google_cloudfunctions2_function" "default" {
     all_traffic_on_latest_revision = true
     ingress_settings               = "ALLOW_INTERNAL_ONLY"
     environment_variables          = var.environment_variables
+    vpc_connector_egress_settings  = var.vpc_connector_egress_settings
   }
 
   labels = {

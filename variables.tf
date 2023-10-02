@@ -88,5 +88,9 @@ variable "source_bucket_name" {
   type    = string
 }
 
+variable "vpc_connector_egress_settings" {
+  default = "PRIVATE_RANGES_ONLY"
+}
+
 
 
