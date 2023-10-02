@@ -98,9 +98,7 @@ resource "google_cloudfunctions2_function" "default" {
 
 }
 
-/*
 output "function_location" {
-  value       = var.trigger_type == "pubsub" ? var.pubsub_topic : google_cloudfunctions2_function.default.location
-  description = var.trigger_type == "pubsub" ? "Pub/Sub topic" : "URL of the Cloud Function"
+  value       = google_cloudfunctions2_function.default.service_config[0].uri
+  description = "Url of the cloudfunction"
 }
-*/
