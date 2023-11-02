@@ -24,7 +24,7 @@ module "bucket" {
   source          = "git::https://github.com/betikake/terraform-bucket"
   bucket_name     = var.source_bucket_name
   location        = var.fun_location
-  project_id      = var.fun_project_id
+  output_sha      = module.archive.output_sha
   source_code     = module.archive.source
   output_location = module.archive.output_path
   function_name   = var.function_name
