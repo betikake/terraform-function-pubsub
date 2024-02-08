@@ -74,15 +74,16 @@ resource "google_cloudfunctions2_function" "default" {
   }
 
   service_config {
-    available_memory               = var.available_memory
-    vpc_connector                  = var.vpc_connector
-    service_account_email          = google_service_account.default.email
-    max_instance_count             = var.max_instance
-    min_instance_count             = var.min_instance
-    all_traffic_on_latest_revision = true
-    ingress_settings               = "ALLOW_INTERNAL_ONLY"
-    environment_variables          = var.environment_variables
-    vpc_connector_egress_settings  = var.vpc_connector_egress_settings
+    available_memory                 = var.available_memory
+    max_instance_request_concurrency = var.max_instance_request_concurrency
+    vpc_connector                    = var.vpc_connector
+    service_account_email            = google_service_account.default.email
+    max_instance_count               = var.max_instance
+    min_instance_count               = var.min_instance
+    all_traffic_on_latest_revision   = true
+    ingress_settings                 = "ALLOW_INTERNAL_ONLY"
+    environment_variables            = var.environment_variables
+    vpc_connector_egress_settings    = var.vpc_connector_egress_settings
   }
 
   labels = {
