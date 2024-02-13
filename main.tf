@@ -30,31 +30,6 @@ module "bucket" {
   function_name   = var.function_name
 }
 
-resource "google_service_account" "default" {
-  account_id   = lower(var.service_account.account_id)
-  display_name = lower(var.service_account.display_name)
-  project      = var.fun_project_id
-}
-
-//permission
-resource "google_project_iam_member" "permissions_am" {
-  project  = var.fun_project_id
-  for_each = toset([
-    "roles/bigquery.dataEditor",
-    "roles/cloudfunctions.invoker",
-    "roles/run.invoker",
-    "roles/cloudsql.admin",
-    "roles/cloudsql.client",
-    "roles/cloudsql.editor",
-    "roles/logging.admin",
-    "roles/logging.logWriter",
-    "roles/pubsub.publisher",
-    "roles/bigquery.admin"
-  ])
-  role   = each.key
-  member = "serviceAccount:${google_service_account.default.email}"
-}
-
 resource "google_cloudfunctions2_function" "default" {
   name        = lower(var.function_name)
   description = var.description
@@ -76,7 +51,7 @@ resource "google_cloudfunctions2_function" "default" {
   service_config {
     available_memory               = var.available_memory
     vpc_connector                  = var.vpc_connector
-    service_account_email          = google_service_account.default.email
+    service_account_email          = var.service_account_email
     max_instance_count             = var.max_instance
     min_instance_count             = var.min_instance
     all_traffic_on_latest_revision = true

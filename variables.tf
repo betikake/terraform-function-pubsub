@@ -30,7 +30,7 @@ variable "min_instance" {
 }
 
 variable "run_time" {
-  default = "go119"
+  default = "go120"
   type    = string
 }
 
@@ -48,11 +48,9 @@ variable "region" {
   type        = string
 }
 
-variable "service_account" {
-  type = object({
-    account_id   = string
-    display_name = string
-  })
+variable "service_account_email" {
+  description = "The email account of the service account to run as"
+  type        = string
 }
 
 variable "vpc_connector" {
