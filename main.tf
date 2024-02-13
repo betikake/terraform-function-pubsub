@@ -53,7 +53,7 @@ resource "google_cloudfunctions2_function" "default" {
     available_memory                 = var.available_memory
     max_instance_request_concurrency = var.max_instance_request_concurrency
     vpc_connector                    = var.vpc_connector
-    service_account_email            = google_service_account.default.email
+    service_account_email            = var.service_account_email
     max_instance_count               = var.max_instance
     min_instance_count               = var.min_instance
     all_traffic_on_latest_revision   = true
